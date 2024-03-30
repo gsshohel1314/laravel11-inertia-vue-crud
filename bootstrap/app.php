@@ -12,17 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->group('web', [
-            // Register Web middleware
+        $middleware->web(append: [
             HandleInertiaRequests::class,
-        ]);
-
-        $middleware->group('api', [
-            // Register API middleware
-        ]);
-
-        $middleware->alias([
-            // register custom middleware
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
