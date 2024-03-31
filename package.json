@@ -13,6 +13,7 @@
     "dependencies": {
         "@inertiajs/vue3": "^1.0.15",
         "@vitejs/plugin-vue": "^5.0.4",
+        "moment": "^2.30.1",
         "vue": "^3.4.21"
     }
 }

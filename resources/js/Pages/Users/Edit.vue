@@ -1,10 +1,14 @@
 <script setup>
     import { useForm, Link } from '@inertiajs/vue3';
 
+    const props = defineProps({
+        user: Object
+    });
+
     const form = useForm({
-        name: '',
-        email: '',
-        phone: '',
+        name: props.user.name,
+        email: props.user.email,
+        phone: props.user.phone,
         password: '',
     });
 </script>
@@ -12,11 +16,11 @@
 <template>
     <div class="card col-6 offset-3">
         <div class="card-header d-flex justify-content-between">
-            <div>User Create</div>
+            <div>User Update</div>
             <div><Link href="/users" as='button' class="btn btn-sm btn-primary">Users List</Link></div>
         </div>
         <div class="card-body">
-            <form @submit.prevent="form.post('/users')">
+            <form @submit.prevent="form.put(`/users/${user.id}`)">
                 <div class="mb-3">
                     <label class="form-label">Name</label>
                     <input v-model="form.name" type="text" class="form-control" placeholder="Enter name">
@@ -41,7 +45,7 @@
                     <div v-if="form.errors.password" class="text-danger">{{ form.errors.password }}</div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="submit" class="btn btn-primary">Update</button>
             </form>
         </div>
     </div>

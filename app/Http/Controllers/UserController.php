@@ -15,7 +15,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Users/Index');
+        $users = User::all();
+
+        return Inertia::render('Users/Index', [
+            'users' => $users
+        ]);
     }
 
     /**
@@ -62,7 +66,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return Inertia::render('Users/Show', [
+            'user' => $user
+        ]);
     }
 
     /**
@@ -70,7 +76,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return Inertia::render('Users/Edit', [
+            'user' => $user
+        ]);
     }
 
     /**
@@ -78,7 +86,30 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $request->validate([
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users,email,'.$user->id,
+            'phone'    => 'required|numeric|digits:11|unique:users,phone,'.$user->id,
+            'password' => 'nullable|min:8',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $user->update([
+                'name'      => $request->name,
+                'email'     => $request->email,
+                'phone'     => $request->phone,
+                'password'  => $request->password !== null ? Hash::make($request->password) : $user->password
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('users.index');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return redirect()->back();
+        }
     }
 
     /**
@@ -86,6 +117,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        if($user){
+            $user->delete();
+
+            return redirect()->route('users.index');
+        }
     }
 }
